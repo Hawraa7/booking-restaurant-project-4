@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from .models import Booking, MenuItem
+from .models import Booking, MenuItem, Table
 from .forms import BookingForm
 
 # Create your views here.
@@ -20,7 +20,7 @@ def booking_view(request):
             return redirect('booking_list')
     else:
         form = BookingForm()
-    return render(request, 'booking.html', {'form': form})
+    return render(request, 'blog/booking.html', {'form': form})
 
 @login_required
 def booking_list_view(request):
