@@ -7,7 +7,7 @@ from .forms import BookingForm
 
 def menu_view(request):
     menu_items = MenuItem.objects.all()
-    return render(request, 'menu.html', {'menu_items': menu_items})
+    return render(request, 'blog/menu.html', {'menu_items': menu_items})
 
 @login_required
 def booking_view(request):
