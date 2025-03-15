@@ -1,5 +1,6 @@
 from django import forms
-from .models import Booking
+from django_summernote.widgets import SummernoteWidget
+from .models import Booking, MenuItem
 
 class BookingForm(forms.ModelForm):
     class Meta:
@@ -8,4 +9,13 @@ class BookingForm(forms.ModelForm):
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),
             'time': forms.TimeInput(attrs={'type': 'time'})
+        }
+
+
+class MenuItemForm(forms.ModelForm):
+    class Meta:
+        model = MenuItem
+        fields = ['name', 'description', 'price']
+        widgets = {
+            'description': SummernoteWidget(),
         }
