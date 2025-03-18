@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block title %}Home - Booking Restaurant{% endblock %}
 
 {% block content %}
 <div class="container text-center mt-5">
     <h1>Welcome to Our Restaurant</h1>
     <p class="lead">Book a table and explore our delicious menu.</p>
-
+    <img src="{% static 'images/restaurant.jpg' %}" alt="Restaurant Interior" class="img-fluid hero-image">
     <div class="mt-4">
         <a href="{% url 'menu' %}" class="btn btn-primary">View Menu</a>
         <a href="{% url 'booking' %}" class="btn btn-success">Book a Table</a>
