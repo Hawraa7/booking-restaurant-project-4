@@ -10,7 +10,13 @@ def home_view(request):
     return render(request, 'blog/index.html')
 
 def menu_view(request):
-    menu_items = MenuItem.objects.all()
+    # Fetch menu items categorized by their category
+    menu_items = {
+        'appetizer': MenuItem.objects.filter(category='appetizer'),
+        'main_course': MenuItem.objects.filter(category='main_course'),
+        'dessert': MenuItem.objects.filter(category='dessert'),
+        'beverage': MenuItem.objects.filter(category='beverage'),
+    }
     return render(request, 'blog/menu.html', {'menu_items': menu_items})
 
 @login_required

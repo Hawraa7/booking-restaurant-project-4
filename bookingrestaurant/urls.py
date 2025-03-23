@@ -31,6 +31,7 @@ from blog.views import (
 
 urlpatterns = [
     path('', home_view, name='home'),
+    path("accounts/", include("allauth.urls")),
     path('admin/', admin.site.urls),
     path('menu/', menu_view, name='menu'),
     path('booking/', booking_view, name='booking'),
