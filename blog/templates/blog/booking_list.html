@@ -1,23 +1,72 @@
-"""
 {% extends 'base.html' %}
 {% block title %}Your Bookings{% endblock %}
 {% block content %}
-<h1>Your Bookings</h1>
-<ul>
-    {% for booking in bookings %}
-    <li>
-        Table {{ booking.table.number }} on {{ booking.date }} at {{ booking.time }} - Guests: {{ booking.guests }}
-        <a href="{% url 'edit_booking' booking.id %}">Edit</a>
-        <a href="#" onclick="confirmDelete('{{ booking.id }}')">Cancel</a>
-    </li>
-    {% endfor %}
-</ul>
+<div class="container mt-4">
+    <h1 class="mb-4">Your Bookings</h1>
+    
+    <!-- Filter by Year -->
+    <div class="mb-3">
+        <label for="filterYear" class="form-label" >Filter by Year:</label>
+        <select id="filterYear" class="form-select" onchange="filterBookings()">
+            <option value="all">All History</option>
+            <option value="last">Last Year</option>
+            <option value="current">This Year</option>
+            <option value="next">Next Year</option>
+        </select>
+    </div>
+    
+    <ul class="list-group" id="bookingsList">
+        {% for booking in bookings %}
+        <li class="list-group-item d-flex justify-content-between align-items-center booking-item" data-year="{{ booking.date|date:'Y' }}">
+            <div>
+                <strong>Table {{ booking.table.number }}</strong> on <span class="badge bg-primary">{{ booking.date }}</span> at <span class="badge bg-secondary">{{ booking.time }}</span> - Guests: {{ booking.guests }}
+            </div>
+            {% if booking.date > today and booking.status != 'rejected'%}
+            <div>
+                <a href="{% url 'edit_booking' booking.id %}" class="btn btn-warning btn-sm py-1 px-1">Edit</a>
+                <button class="btn btn-danger btn-sm py-1 px-1" onclick="confirmDelete('{{ booking.id }}')">Cancel</button>
+            </div>
+            {% endif %}
+            <div>
+                <span class="badge {% if booking.status == 'waiting' %}bg-warning{% elif booking.status == 'confirmed' %}bg-success{% elif booking.status == 'rejected' %}bg-danger{% endif %}">{{ booking.get_status_display }}</span>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
 <script>
     function confirmDelete(bookingId) {
         if (confirm("Are you sure you want to cancel this booking?")) {
             window.location.href = `/cancel/${bookingId}/`;
         }
     }
+
+    function filterBookings() {
+        let yearFilter = document.getElementById("filterYear").value;
+        let currentYear = new Date().getFullYear();
+        let bookings = document.querySelectorAll(".booking-item");
+
+
+        bookings.forEach(booking => {
+            let bookingYear = parseInt(booking.getAttribute("data-year"));
+            let matchesFilter = false;
+            if (!isNaN(bookingYear)) {
+                if (yearFilter === "all") {
+                    matchesFilter = true;
+                } else if (yearFilter === "last" && bookingYear === currentYear - 1) {
+                    matchesFilter = true;
+                } else if (yearFilter === "current" && bookingYear === currentYear) {
+                    matchesFilter = true;
+                } else if (yearFilter === "next" && bookingYear === currentYear + 1) {
+                    matchesFilter = true;
+                }
+            }
+            if (matchesFilter){
+                booking.style.setProperty('display', 'flex', 'important');  // Force with !important 
+            } else {
+                booking.style.setProperty('display', 'none', 'important');  // Force with !important
+            }
+        });
+    }
 </script>
 {% endblock %}
-"""

@@ -3,6 +3,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Booking, MenuItem, Table
 from .forms import BookingForm
+from datetime import date
+
 
 # Create your views here.
 
@@ -26,16 +28,19 @@ def booking_view(request):
         if form.is_valid():
             booking = form.save(commit=False)
             booking.user = request.user
+            booking.status = 'waiting'
             booking.save()
             return redirect('booking_list')
     else:
         form = BookingForm()
+        tables = Table.objects.all()
     return render(request, 'blog/booking.html', {'form': form})
 
 @login_required
 def booking_list_view(request):
+    today = date.today()
     bookings = Booking.objects.filter(user=request.user)
-    return render(request, 'blog/booking_list.html', {'bookings': bookings})
+    return render(request, 'blog/booking_list.html', {'bookings': bookings, 'today': today})
 
 @login_required
 def cancel_booking_view(request, booking_id):
