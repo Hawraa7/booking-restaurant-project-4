@@ -48,7 +48,7 @@ class Booking(models.Model):
     
 class MenuItem(models.Model):
     CATEGORY_CHOICES = [
-        ('appetizer', 'Appetizer'),
+        ('appetizer', 'Appetizer & Salads'),
         ('main_course', 'Main Course'),
         ('dessert', 'Dessert'),
         ('beverage', 'Beverage'),
