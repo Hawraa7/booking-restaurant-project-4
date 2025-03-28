@@ -22,7 +22,7 @@ class Booking(models.Model):
     table = models.ForeignKey(Table, on_delete=models.CASCADE)
     date = models.DateField()
     time = models.TimeField()
-    guests = models.IntegerField()
+    guests = models.IntegerField(default=1)
     status = models.CharField(max_length=10, choices=STATUS_Dic, default='waiting')
 
     # Prevent double bookings
@@ -34,7 +34,7 @@ class Booking(models.Model):
     
         # Custom validation to ensure guests are within a valid range and the booking is in the future
     def clean(self):
-        if self.guests < 1:
+        if self.guests <= 1:
             raise ValidationError("The number of guests must be at least 1.")
         if self.guests > self.table.capacity:
             raise ValidationError(f"Number of guests ({self.guests}) cannot exceed the capacity of the table ({self.table.capacity}).")
