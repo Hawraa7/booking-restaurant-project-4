@@ -1,18 +1,41 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Our Menu" %}{% endblock %}
 
 {% block content %}
-<h2>Our Menu</h2>
-<div class="menu">
-    {% for item in menu_items %}
-        <div class="menu-item">
-            {% if item.image %}
-                <img src="{{ item.image.url }}" alt="{{ item.name }}">
+<div class="container mt-5">
+    {% for category, items in menu_items.items %}
+    <div class="menu-section mb-5">
+        <h3 class="text-center border-bottom pb-2">
+            {% if category == 'main_course' %}
+                Main dish
+            {% else %}
+            {{ category|capfirst }}
             {% endif %}
-            <h3>{{ item.name }}</h3>
-            <p>{{ item.description|safe }}</p>
-            <p><strong>Price:</strong> ${{ item.price }}</p>
+        </h3>
+        <div class="row">
+            {% for item in items %}
+            {% if item.available %}
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100">
+                    {% if item.image %}
+                    <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.name }}">
+                    {% else %}
+                    <img src="https://via.placeholder.com/300x200?text=No+Image" class="card-img-top" alt="{{ item.name }}">
+                    {% endif %}
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ item.name }}</h5>
+                        <p class="card-text">{{ item.description | safe }}</p>
+                        <p class="card-text text-muted">{% trans "Price" %}: ${{ item.price }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
         </div>
+    </div>
     {% endfor %}
 </div>
 {% endblock %}
-

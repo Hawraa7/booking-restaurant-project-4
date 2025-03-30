@@ -16,6 +16,7 @@ import dj_database_url
 if os.path.isfile('env.py'):
     import env
 from pathlib import Path
+import sys
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -31,7 +32,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.herokuapp.com']
 
@@ -45,9 +46,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_summernote',
+    'django.contrib.sites',
     'blog',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'django_summernote',
 ]
+
+SITE_ID = 1
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -58,6 +67,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'bookingrestaurant.urls'
@@ -102,6 +112,9 @@ CSRF_TRUSTED_ORIGINS = [
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
+if 'test' in sys.argv:
+    DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
+    
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -117,6 +130,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+# Email Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.environ.get("EMAIL_HOST")
+EMAIL_PORT = os.environ.get("EMAIL_PORT")
+EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS")
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/

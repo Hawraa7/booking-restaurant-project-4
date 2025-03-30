@@ -1,23 +1,89 @@
-"""
 {% extends 'base.html' %}
 {% block title %}Your Bookings{% endblock %}
 {% block content %}
-<h1>Your Bookings</h1>
-<ul>
-    {% for booking in bookings %}
-    <li>
-        Table {{ booking.table.number }} on {{ booking.date }} at {{ booking.time }} - Guests: {{ booking.guests }}
-        <a href="{% url 'edit_booking' booking.id %}">Edit</a>
-        <a href="#" onclick="confirmDelete('{{ booking.id }}')">Cancel</a>
-    </li>
-    {% endfor %}
-</ul>
+<div class="container mt-4">
+    <h1 class="mb-4">Your Bookings</h1>
+    
+    <!-- Filter by Year -->
+    <div class="mb-3">
+        <label for="filterYear" class="form-label">Filter by Year:</label>
+        <select id="filterYear" class="form-select" onchange="filterBookings()">
+            <option value="all">All History</option>
+            <option value="last">Last Year</option>
+            <option value="current">This Year</option>
+            <option value="next">Next Year</option>
+        </select>
+    </div>
+    
+    <ul class="list-group" id="bookingsList">
+        {% for booking in bookings %}
+        <li class="list-group-item d-flex flex-column flex-md-row justify-content-between align-items-md-center booking-item" data-year="{{ booking.date|date:'Y' }}">
+            <!-- Booking Details -->
+            <div>
+                <strong>Table {{ booking.table.number }}</strong> on 
+                <span class="badge bg-primary">{{ booking.date }}</span> at 
+                <span class="badge bg-secondary">{{ booking.time }}</span> - Guests: {{ booking.guests }}
+            </div>
+
+            <!-- Status and Actions -->
+            <div class="d-flex flex-column flex-md-row align-items-md-center mt-2 mt-md-0">
+                <!-- Status Badge -->
+                <span class="badge mb-2 mb-md-0 me-md-3 
+                    {% if booking.status == 'waiting' %}bg-warning
+                    {% elif booking.status == 'confirmed' %}bg-success
+                    {% elif booking.status == 'rejected' %}bg-danger
+                    {% endif %}">
+                    {{ booking.get_status_display }}
+                </span>
+
+                <!-- Edit & Cancel Buttons -->
+                <div class="d-flex flex-column flex-md-row">
+                    {% if booking.date > today %}
+                        <a href="{% url 'edit_booking' booking.id %}" class="btn btn-warning btn-sm mb-2 mb-md-0 me-md-2">Edit</a>
+                        <button class="btn btn-danger btn-sm" onclick="confirmDelete('{{ booking.id }}')">Cancel</button>
+                    {% else %}
+                        <button class="btn btn-secondary btn-sm mb-2 mb-md-0 me-md-2" disabled>Edit</button>
+                        <button class="btn btn-secondary btn-sm" disabled>Cancel</button>
+                    {% endif %}
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
 <script>
     function confirmDelete(bookingId) {
         if (confirm("Are you sure you want to cancel this booking?")) {
             window.location.href = `/cancel/${bookingId}/`;
         }
     }
+
+    function filterBookings() {
+        let yearFilter = document.getElementById("filterYear").value;
+        let currentYear = new Date().getFullYear();
+        let bookings = document.querySelectorAll(".booking-item");
+
+        bookings.forEach(booking => {
+            let bookingYear = parseInt(booking.getAttribute("data-year"));
+            let matchesFilter = false;
+            if (!isNaN(bookingYear)) {
+                if (yearFilter === "all") {
+                    matchesFilter = true;
+                } else if (yearFilter === "last" && bookingYear === currentYear - 1) {
+                    matchesFilter = true;
+                } else if (yearFilter === "current" && bookingYear === currentYear) {
+                    matchesFilter = true;
+                } else if (yearFilter === "next" && bookingYear === currentYear + 1) {
+                    matchesFilter = true;
+                }
+            }
+            if (matchesFilter){
+                booking.style.setProperty('display', 'flex', 'important');
+            } else {
+                booking.style.setProperty('display', 'none', 'important');
+            }
+        });
+    }
 </script>
 {% endblock %}
-"""
