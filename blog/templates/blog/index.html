@@ -1,15 +1,31 @@
-{% extends "base.html" %}
-{% load static %}
-{% block title %}Home - Booking Restaurant{% endblock %}
+{% extends "base.html" %}  <!-- Inheriting the base HTML template for a consistent layout -->
+{% load static %}  <!-- Loading static files (like CSS, JS, images) in Django templates -->
+
+{% block title %}Home - Booking Restaurant{% endblock %}  <!-- Defining the page title, which will be rendered in the <title> tag in the <head> section of the base template -->
 
 {% block content %}
+<!-- Start of the content block. This section will be rendered in place of the content block in base.html -->
+
 <div class="container text-center mt-5">
-    <h1>Welcome to Our Restaurant</h1>
-    <p class="lead">Book a table and explore our delicious menu.</p>
+    <!-- A Bootstrap container with centered text and margin-top of 5 (mt-5) -->
+
+    <h1>Welcome to Our Restaurant</h1>  <!-- Main heading of the page -->
+
+    <p class="lead">Book a table and explore our delicious menu.</p>  <!-- A short description or call to action for the user -->
+
     <img src="{% static 'images/restaurant.jpg' %}" alt="Restaurant Interior" class="img-fluid hero-image">
+    <!-- An image of the restaurant with static file loading for the image source. `img-fluid` ensures responsive resizing. -->
+
     <div class="mt-4">
+        <!-- Container for the buttons with a margin-top of 4 (mt-4) -->
+
         <a href="{% url 'menu' %}" class="btn btn-primary">View Menu</a>
+        <!-- A button that links to the 'menu' URL. It uses the 'btn' and 'btn-primary' Bootstrap classes for styling -->
+
         <a href="{% url 'booking' %}" class="btn btn-success">Book a Table</a>
+        <!-- A button that links to the 'booking' URL. It uses the 'btn' and 'btn-success' Bootstrap classes for styling -->
     </div>
+
 </div>
 {% endblock %}
+<!-- End of the content block -->

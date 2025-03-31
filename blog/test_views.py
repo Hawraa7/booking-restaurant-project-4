@@ -4,6 +4,7 @@ from django.test import TestCase
 from .models import MenuItem, Table, Booking
 from datetime import date, time
 
+
 class TestMenuViews(TestCase):
 
     def setUp(self):
@@ -16,10 +17,10 @@ class TestMenuViews(TestCase):
 
         # Creating a sample MenuItem with correct price format (Decimal)
         self.menu_item = MenuItem.objects.create(
-            name="apple juice", 
+            name="apple juice",
             description="refreshing juice",
             price=13.00,  # Correctly using decimal value
-            category="appetizer", 
+            category="appetizer",
             available=True
         )
 
@@ -29,16 +30,16 @@ class TestMenuViews(TestCase):
     def test_render_menu_page(self):
         # Login the superuser for accessing the menu page
         self.client.login(username="myUsername", password="myPassword")
-        
+
         # Request the menu page (no arguments needed here)
         response = self.client.get(reverse('menu'))
 
         # Check if the response status is 200 OK
         self.assertEqual(response.status_code, 200)
-        
+
         # Check if the menu items are in the response content
-        self.assertIn(b"apple juice", response.content)  # Check the name of the MenuItem
-        self.assertIn(b"refreshing juice", response.content)  # Check the description
+        self.assertIn(b"apple juice", response.content)
+        self.assertIn(b"refreshing juice", response.content)
         self.assertIn(b"13.00", response.content)  # Check the price
 
     def test_successful_booking_submission(self):
@@ -57,15 +58,15 @@ class TestMenuViews(TestCase):
         # Make POST request to booking page
         response = self.client.post(reverse('booking'), booking_data)
 
-        # Follow the redirect to the final destination (e.g., booking list page)
+        # Follow the redirect to the final destination (e.g. booking list page)
         self.assertRedirects(response, reverse('booking_list'))
 
-        # Now test if booking was successfully created and user is redirected to booking list
+        # Now test if booking was successfully created and user is redirected
         booking = Booking.objects.first()  # Fetch the first booking
 
         # Assert that booking data is saved correctly
         self.assertEqual(booking.table.id, self.table.id)
         self.assertEqual(booking.date, date(2026, 3, 28))
-        self.assertEqual(booking.time, time(18, 30))  
+        self.assertEqual(booking.time, time(18, 30))
         self.assertEqual(booking.guests, 2)
         self.assertEqual(booking.status, 'waiting')

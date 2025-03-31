@@ -1,41 +1,82 @@
-{% extends "base.html" %}
+{% extends "base.html" %}  <!-- Extending the base HTML template for consistent layout (header, footer, etc.) -->
 
-{% load i18n %}
+{% load i18n %}  <!-- Loading the i18n (internationalization) template tag for translations -->
 
-{% block head_title %}{% trans "Our Menu" %}{% endblock %}
+{% block head_title %}{% trans "Our Menu" %}{% endblock %}  
+<!-- This block sets the page title (inside <title>) and uses {% trans %} to translate "Our Menu" if needed. -->
 
 {% block content %}
+<!-- Start of the content block where specific page content is rendered -->
+
 <div class="container mt-5">
+    <!-- A Bootstrap container with a margin-top of 5 for spacing -->
+
     {% for category, items in menu_items.items %}
+    <!-- Looping through each category in the `menu_items` dictionary and its associated items -->
+
     <div class="menu-section mb-5">
+        <!-- Each category section with a margin-bottom of 5 for separation -->
+
         <h3 class="text-center border-bottom pb-2">
+            <!-- Section heading with centered text and a bottom border for styling -->
+
             {% if category == 'main_course' %}
                 Main dish
             {% else %}
             {{ category|capfirst }}
             {% endif %}
+            <!-- Display 'Main dish' for the 'main_course' category, otherwise display the category name (capitalized). -->
+
         </h3>
+
         <div class="row">
+            <!-- Bootstrap row for displaying the menu items in a grid -->
+
             {% for item in items %}
+            <!-- Looping through each item in the category -->
+
             {% if item.available %}
+            <!-- Check if the item is available before rendering it -->
+
             <div class="col-md-4 mb-4">
+                <!-- Bootstrap column (1/3 width on medium screens) for each item, with margin-bottom of 4 -->
+
                 <div class="card shadow-sm h-100">
+                    <!-- Bootstrap card component with a shadow and full height (h-100) -->
+
                     {% if item.image %}
+                    <!-- Check if the item has an image -->
+
                     <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.name }}">
+                    <!-- Display the image for the item (with the image URL) -->
+
                     {% else %}
+                    <!-- If no image is available, show a placeholder image -->
                     <img src="https://via.placeholder.com/300x200?text=No+Image" class="card-img-top" alt="{{ item.name }}">
                     {% endif %}
+                    
                     <div class="card-body text-center">
+                        <!-- Card body with centered text -->
+
                         <h5 class="card-title">{{ item.name }}</h5>
+                        <!-- Display the item name -->
+
                         <p class="card-text">{{ item.description | safe }}</p>
+                        <!-- Display the item description (using the `safe` filter to allow HTML content) -->
+
                         <p class="card-text text-muted">{% trans "Price" %}: ${{ item.price }}</p>
+                        <!-- Display the price of the item with a translation of "Price" and item price -->
                     </div>
                 </div>
             </div>
+
             {% endif %}
             {% endfor %}
         </div>
     </div>
+
     {% endfor %}
 </div>
+
 {% endblock %}
+<!-- End of content block -->

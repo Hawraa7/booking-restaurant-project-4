@@ -130,7 +130,7 @@ table tr:hover {
     max-width: 90%;  
     height: auto;      
     border-radius: 10px;
-    display: auto;
+    display: flex;
     margin: 20px auto; 
     }
     
